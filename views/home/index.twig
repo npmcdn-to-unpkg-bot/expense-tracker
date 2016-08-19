@@ -1,0 +1,214 @@
+{% extends 'basic.twig' %}
+
+{% block content %}
+    <ul class='grid'>
+        <li>
+            <a class='dash' href='/stats/1/'>
+                <i class='fa fa-bar-chart'></i>
+                <div class='c'>Statistics</div>
+            </a>
+        </li>
+        <li>
+            <a class='dash' href='/expense/1/'>
+                <i class='fa fa-edit'></i>
+                <div class='c'>Add transaction</div>
+            </a>
+        </li>
+        <li>
+            <a class='dash' href='/income/'>
+                <i class='fa fa-plus'></i>
+                <div class='c'>Add income</div>
+            </a>
+        </li>
+        {% if openReceipt %}
+            <li>
+                <a class='dash' href='/receipts/close/'>
+                    <i class='fa fa-print'></i>
+                    <div class='c'>Close the receipt</div>
+                </a>
+            </li>
+        {% else %}
+        <li>
+            <a class='dash' href='/receipts/new/'>
+                <i class='fa fa-print'></i>
+                <div class='c'>Open a receipt</div>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+    <div class='clearfix'></div>
+    <div class='dash-overview'>
+        {% set months = {'1': 'Jan', '2': 'Feb', '3': 'Mar', '4': 'Apr', '5': 'May', '6': 'Jun','7': 'Jul', '8': 'Aug', '9': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'} %}
+        {% for item in data %}
+            <div class='row{% if item.income - item.expense < 0 %} loss{% endif %}'>
+                <div class='date'>{{ months[item.d|slice(5, 2)] }} {{ item.d|slice(0, 4)}} : {{ item.income - item.expense }} Rub</div>
+                <div class='income'>+{{ item.income }} Rub</div>
+                <div class='expense'>-{{ item.expense }} Rub</div>
+                <div class='clearfix'></div>
+            </div>
+        {% endfor %}
+        <div class='clearfix'></div>
+    </div>
+
+    <canvas id="myChart" width="1060" height="400"></canvas>
+
+<script>
+    var data = {
+        labels: [
+            {% for key, value in graph %}
+            "{{ key }}",
+            {% endfor %}
+        ],
+        datasets: [
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,120,120,0.2)",
+                strokeColor: "rgba(220,120,120,1)",
+                pointColor: "rgba(220,120,120,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,120,120,1)",
+                data: [
+                    {% for value in graph %}
+                    {{ value }},
+                    {% endfor %}
+                ]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(180,220,180,0.2)",
+                strokeColor: "rgba(180,220,180,1)",
+                pointColor: "rgba(180,220,180,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(180,220,180,1)",
+                data: [
+                    {% for value in graph_ma7 %}
+                    {{ value }},
+                    {% endfor %}
+                ]
+            },
+            {
+                label: "My Third dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: [
+                    {% for value in graph_ma30 %}
+                    {{ value }},
+                    {% endfor %}
+                ]
+            }
+        ]
+    };
+
+    var ctx = $("#myChart").get(0).getContext("2d");
+    var myNewChart = new Chart(ctx).Line(data);
+</script>
+
+    <h3>Monthly allowances</h3>
+    {% for bar in bars %}
+        <p>{{ bar['name'] }}: <span style="color: {{ bar['class'] }}">{{ bar['diff'] }} Rub</span> / {{ bar['allowed'] }} Rub</p>
+    {% endfor %}
+
+    <h3>Accounts</h3>
+    {% for account in accounts %}
+        <p>{{ account['name'] }}: <span style="color: {{ account['class'] }}">{{ account['amount'] }}</span> {{ account['currency'] }}</p>
+    {% endfor %}
+
+    <h3>Disposable</h3>
+    <p>{{ accounts_total_rub_disposable }} RUB</p>
+
+    <h3>Total worth</h3>
+    <p>{{ accounts_total_rub }} RUB</p>
+    <p>{{ accounts_total_usd }} USD</p>
+    <p>{{ accounts_total_eur }} EUR</p>
+
+    <h3>Burn rate</h3>
+    <p>Daily: {{ daily_burn_rate }} RUB</p>
+    <p>Monthly: {{ monthly_burn_rate }} RUB</p>
+
+
+    <h3>Structure</h3>
+
+    <canvas id="bar-chart" style="width: 500px; height: 200px;"></canvas>
+
+
+
+
+    <script>
+        var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+        var randomColorFactor = function(){ return Math.round(Math.random()*255)};
+        var barChartData = {
+            labels : [
+                {% for item in structure %}
+                    "{{ item['d'] }}",
+                {% endfor %}
+            ],
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data : [
+                        {% for item in structure %}
+                        {{ item['savings'] }},
+                        {% endfor %}
+                    ]
+                },
+                {
+                    fillColor : "rgba(220,0,0,0.5)",
+                    strokeColor : "rgba(220,0,0,0.8)",
+                    highlightFill: "rgba(220,0,0,0.75)",
+                    highlightStroke: "rgba(220,0,0,1)",
+                    data : [
+                        {% for item in structure %}
+                            {{ item['rest'] }},
+                        {% endfor %}
+                    ]
+                },
+                {
+                    fillColor : "rgba(0,0,220,0.5)",
+                    strokeColor : "rgba(0,0,220,0.8)",
+                    highlightFill: "rgba(0,0,220,0.75)",
+                    highlightStroke: "rgba(0,0,220,1)",
+                    data : [
+                        {% for item in structure %}
+                        {{ item['services'] }},
+                        {% endfor %}
+                    ]
+                },
+                {
+                    fillColor : "rgba(0,220,220,0.5)",
+                    strokeColor : "rgba(0,220,220,0.8)",
+                    highlightFill: "rgba(0,220,220,0.75)",
+                    highlightStroke: "rgba(0,220,220,1)",
+                    data : [
+                        {% for item in structure %}
+                            {{ item['workplace'] }},
+                        {% endfor %}
+                    ]
+                },
+                {
+                    fillColor : "rgba(0,220,0,0.5)",
+                    strokeColor : "rgba(0,220,0,0.8)",
+                    highlightFill: "rgba(0,220,0,0.75)",
+                    highlightStroke: "rgba(0,220,0,1)",
+                    data : [
+                        {% for item in structure %}
+                            {{ item['foodies'] }},
+                        {% endfor %}
+                    ]
+                }
+            ]
+        };
+        var ctx = document.getElementById("bar-chart").getContext("2d");
+        window.myBar = new Chart(ctx).StackedBar(barChartData, {
+            responsive : true
+        });
+    </script>
+{% endblock %}

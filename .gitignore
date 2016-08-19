@@ -1,0 +1,6 @@
+/vendor/
+/log/
+/conf/
+composer.lock
+.DS_Store
+.idea/

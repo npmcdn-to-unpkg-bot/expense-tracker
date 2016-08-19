@@ -1,0 +1,65 @@
+{% extends 'basic.twig' %}
+
+{% block content %}
+    <div class='transaction-add'>
+        <form id='form-receipt-add'>
+            <div class='row'>
+                <div class='label'>Date</div>
+                <input type='text' id='r-day' class='day' placeholder='day' value='{{ today.day }}' autocomplete='off' />
+                <input type='text' id='r-month' class='month' placeholder='month' value='{{ today.month }}' autocomplete='off' />
+                <input type='text' id='r-year' class='year' placeholder='year' value='{{ today.year }}' autocomplete='off' />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Account</div>
+                <select id='r-account'>
+                    {% for account in accounts %}
+                        <option value="{{ account['id'] }}">{{ account['name'] }}</option>
+                    {% endfor %}
+                </select>
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Shop</div>
+                <select id='r-shop'>
+                    {% for shop in shops %}
+                        <option value="{{ shop['id'] }}">{{ shop['name'] }}</option>
+                    {% endfor %}
+                </select>
+                or create new:
+                <input type='text' id='r-shop-new' autocomplete='off' />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'></div>
+                <a href='javascript:void(0)' onclick='openReceipt()'>Open receipt</a>
+                <div class='clearfix'></div>
+            </div>
+        </form>
+    </div>
+    <div class='clearfix'></div>
+
+    <script>
+        function openReceipt()
+        {
+            var day = $('#r-day').val(),
+                month = $('#r-month').val(),
+                year = $('#r-year').val(),
+                account = $('#r-account').val(),
+                shop = $('#r-shop').val(),
+                shop_new = $('#r-shop-new').val();
+            $.post('/receipts/open/', {day: day, month: month, year: year, account: account, shop: shop, shop_new: shop_new}, function(response) {
+                try {
+                    var json = JSON.parse(response);
+                    if (json.status == 'ok') {
+                        window.location.href = '/';
+                    } else {
+                        alert(json.message);
+                    }
+                } catch (e) {
+                    alert(e);
+                }
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,180 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.clearfix {
+  float: none;
+  clear: both;
+}
+a {
+  color: #0080de;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  background: #f0f3f7;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+}
+.wrapper {
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.4);
+  min-height: 100%;
+  width: 1140px;
+  background: #fff;
+  margin: 0 auto;
+  overflow: auto;
+}
+.wrapper header {
+  background: #f8f8f8;
+  margin: 20px 0;
+  padding: 10px 40px;
+  border-style: solid;
+  border-width: 1px 0;
+  border-color: #bbb;
+}
+.wrapper .content-container {
+  padding: 20px 40px;
+}
+.wrapper .content-container ul.grid {
+  list-style: none;
+}
+.wrapper .content-container ul.grid li {
+  float: left;
+}
+.wrapper .content-container ul.grid li a {
+  display: block;
+  width: 140px;
+  margin: 0 20px 20px 0;
+  background: #0080de;
+  color: #fff;
+  transition: all .2s;
+  padding: 20px;
+  min-height: 60px;
+}
+.wrapper .content-container ul.grid li a:hover {
+  background: #1898f6;
+  text-decoration: none;
+}
+.wrapper .content-container ul.grid li a.dash {
+  text-align: center;
+}
+.wrapper .content-container ul.grid li a.dash i {
+  font-size: 42px;
+}
+.wrapper .content-container ul.grid li:nth-child(5n) {
+  margin-right: 0;
+}
+.wrapper .content-container .transaction-add {
+  background: #f8f8f8;
+  padding: 20px;
+}
+.wrapper .content-container .transaction-add form .row {
+  margin-bottom: 10px;
+}
+.wrapper .content-container .transaction-add form .row .label {
+  float: left;
+  width: 100px;
+  padding: 5px 0;
+}
+.wrapper .content-container .transaction-add form .row input {
+  border: 1px solid #bbb;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400px;
+  padding: 4px 10px;
+  outline: none;
+}
+.wrapper .content-container .transaction-add form .row input:focus {
+  border-color: #000;
+}
+.wrapper .content-container .transaction-add form .row input.day,
+.wrapper .content-container .transaction-add form .row input.month {
+  width: 18px;
+}
+.wrapper .content-container .transaction-add form .row input.year {
+  width: 36px;
+}
+.wrapper .content-container .transaction-list {
+  margin-top: 40px;
+}
+.wrapper .content-container .transaction-list .row {
+  border-top: 1px dashed #bbb;
+  padding: 4px 100px;
+}
+.wrapper .content-container .transaction-list .row:last-child {
+  border-bottom: 1px dashed #bbb;
+}
+.wrapper .content-container .transaction-list .row .date {
+  float: left;
+  width: 100px;
+}
+.wrapper .content-container .transaction-list .row .price {
+  float: right;
+}
+.wrapper .content-container .transaction-list .row .quantity {
+  text-align: center;
+}
+.wrapper .content-container .transaction-list .row .name {
+  float: left;
+  width: 150px;
+}
+.wrapper .content-container .stats .row {
+  display: block;
+  border-top: 1px dashed #bbb;
+  padding: 4px 0;
+}
+.wrapper .content-container .stats .row.hovered:hover {
+  background: #f8f8f8;
+}
+.wrapper .content-container .stats .row:last-child {
+  border-bottom: 1px dashed #bbb;
+}
+.wrapper .content-container .stats .row .caption {
+  float: left;
+  width: 100px;
+}
+.wrapper .content-container .stats .row .bar {
+  margin-left: 150px;
+  height: 60px;
+  background: #0080de;
+}
+.wrapper .content-container .stats .row .price {
+  float: right;
+}
+.wrapper .content-container .dash-overview {
+  margin-top: 40px;
+}
+.wrapper .content-container .dash-overview .row {
+  margin: 0 20px 20px 0;
+  float: left;
+  width: 156px;
+  border: 2px dashed #095;
+  padding: 10px;
+}
+.wrapper .content-container .dash-overview .row.loss {
+  border-color: #b33;
+}
+.wrapper .content-container .dash-overview .row .date {
+  font-weight: 600;
+}
+.wrapper .content-container .dash-overview .row .income {
+  color: #009955;
+}
+.wrapper .content-container .dash-overview .row .expense {
+  color: #b33;
+}
+
+
+.receipt {
+  background: #009955;
+  color: #ffffff;
+  padding: 10px;
+  text-align: center;
+}

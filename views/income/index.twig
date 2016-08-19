@@ -1,0 +1,75 @@
+{% extends 'basic.twig' %}
+
+{% block content %}
+    <div class='transaction-add'>
+        <form id='form-transaction-add'>
+            <div class='row'>
+                <div class='label'>Amount</div>
+                <input type='text' id='tr-amount' autocomplete='off' /><br />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Date</div>
+                <input type='text' id='tr-day' class='day' placeholder='day' value='{{ today.day }}' autocomplete='off' />
+                <input type='text' id='tr-month' class='month' placeholder='month' value='{{ today.month }}' autocomplete='off' />
+                <input type='text' id='tr-year' class='year' placeholder='year' value='{{ today.year }}' autocomplete='off' />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>From account</div>
+                <select id='tr-account-from'>
+                    {% for account in accounts_ext %}
+                        <option value="{{ account['id'] }}">{{ account['name'] }}</option>
+                    {% endfor %}
+                </select>
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>To account</div>
+                <select id='tr-account-to'>
+                    {% for account in accounts_int %}
+                        <option value="{{ account['id'] }}">{{ account['name'] }}</option>
+                    {% endfor %}
+                </select>
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'></div>
+                <a href='javascript:void(0)' onclick='addTransaction({{ catID }})'>Add</a>
+                <div class='clearfix'></div>
+            </div>
+        </form>
+    </div>
+    
+    
+    <div class='transaction-list'>
+        {% set months = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun','07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'} %}
+        {% for item in transactions %}
+            <div class='row'>
+                <div class='cell date'>{{ item.dt|slice(8, 2)}} {{ months[item.dt|slice(5, 2)] }}</div>
+                <div class='cell name'>{{ item['from_name'] }}</div>
+                <div class='cell name'>{{ item['to_name'] }}</div>
+                <div class='cell price'>{{ item.price }} Rub</div>
+                <div class='clearfix'></div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        function addTransaction(catID) {
+            var amount = $('#tr-amount').val(),
+                day = $('#tr-day').val(),
+                month = $('#tr-month').val(),
+                year = $('#tr-year').val(),
+                from_account = $('#tr-account-from').val(),
+                to_account = $('#tr-account-to').val();
+            if (amount == '' || day == '' || month == '' || year == '') {
+                return;
+            }
+            $.post('/income/add/', {amount: amount, day: day, month: month, year: year, catID: catID, from_account: from_account, to_account: to_account}, function(response) {
+                window.location.reload();
+            });
+        }
+    </script>
+    <div class='clearfix'></div>
+{% endblock %}

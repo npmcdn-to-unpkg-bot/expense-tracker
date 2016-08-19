@@ -1,0 +1,93 @@
+{% extends 'basic.twig' %}
+
+{% block content %}
+    <ul class='grid'>
+        {% for item in items %}
+            <li>
+                <a href='/expense/{{ item.id }}/'>{{ item.name }}</a>
+            </li>
+        {% endfor %}
+        <li>
+            <a href='javascript:void(0)' onclick='createItem({{ catID }})'><i class='fa fa-plus'></i> Create new</a>
+        </li>
+    </ul>
+    
+    <div class='clearfix'></div>
+    
+    <div class='transaction-add'>
+        <form id='form-transaction-add'>
+            <div class='row'>
+                <div class='label'>Price</div>
+                <input type='text' id='tr-price' autocomplete='off' /><br />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Quantity</div>
+                <input type='text' id='tr-quantity' autocomplete='off' /><br />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Date</div>
+                <input type='text' id='tr-day' class='day' placeholder='day' value='{{ today.day }}' autocomplete='off' />
+                <input type='text' id='tr-month' class='month' placeholder='month' value='{{ today.month }}' autocomplete='off' />
+                <input type='text' id='tr-year' class='year' placeholder='year' value='{{ today.year }}' autocomplete='off' />
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'>Account</div>
+                <select id='tr-account-from'>
+                    {% for account in accounts %}
+                    <option value="{{ account['id'] }}" {% if account['id'] == selectedAccountId %}selected{% endif %}>{{ account['name'] }}</option>
+                    {% endfor %}
+                </select>
+                <div class='clearfix'></div>
+            </div>
+            <div class='row'>
+                <div class='label'></div>
+                <a href='javascript:void(0)' onclick='addTransaction({{ catID }})'>Add</a>
+                <div class='clearfix'></div>
+            </div>
+        </form>
+    </div>
+    
+    
+    <div class='transaction-list'>
+        {% set months = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun','07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'} %}
+        {% for item in transactions %}
+            <div class='row'>
+                <div class='cell date'>{{ item.dt|slice(8, 2)}} {{ months[item.dt|slice(5, 2)] }} {% if item.dt|slice(2, 2) < 16 %}'{{ item.dt|slice(2, 2) }}{% endif %}</div>
+                <div class='cell price'>{{ item.price }} Rub</div>
+                <div class='cell quantity'>{{ item.quantity }}</div>
+                <div class='clearfix'></div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        function createItem(catID) {
+            var name = window.prompt("Enter name of the new item", "");
+            if (name == '') {
+                return;
+            }
+            $.post('/expense/addCategory/', {name: name, catID: catID}, function(response) {
+                window.location.reload();
+            })
+        }
+        
+        function addTransaction(catID) {
+            var price = $('#tr-price').val(),
+                quantity = $('#tr-quantity').val(),
+                day = $('#tr-day').val(),
+                month = $('#tr-month').val(),
+                year = $('#tr-year').val(),
+                account_from = $('#tr-account-from').val();
+            if (price == '' || day == '' || month == '' || year == '') {
+                return;
+            }
+            $.post('/expense/add/', {quantity: quantity, price: price, day: day, month: month, year: year, catID: catID, account_from: account_from}, function(response) {
+//                console.log(response);
+                window.location.reload();
+            });
+        }
+    </script>
+{% endblock %}

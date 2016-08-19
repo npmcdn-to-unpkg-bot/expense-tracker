@@ -1,0 +1,14 @@
+{% extends 'basic.twig' %}
+
+{% block content %}
+    <div class='stats'>
+        {% for item in data %}
+        <a class='row{% if item.leaves|length > 1 %} hovered{% endif %}'{% if item.leaves|length > 1 %} href='/stats/{{ item.id }}{{ date_query }}'{% endif %}>
+            <div class='caption'>{{ item.name }}</div>
+            <div class='price'>{{ item.sum }} Rub</div>
+            <div class='bar' style='width: {{ item.width }}px;'></div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class='clearfix'></div>
+{% endblock %}

@@ -1,0 +1,180 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.clearfix {
+    float: none;
+    clear: both;
+}
+
+a {
+    color: #0080de;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+html,body {
+    height: 100%;
+}
+
+body {
+    background: #f0f3f7;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.wrapper {
+    box-shadow: 0 0 3px 1px rgba(0,0,0,.4);
+    min-height: 100%;
+    width: 1140px;
+    background: #fff;
+    margin: 0 auto;
+    overflow: auto;
+    header {
+        background: #f8f8f8;
+        margin: 20px 0;
+        padding: 10px 40px;
+        border-style: solid;
+        border-width: 1px 0;
+        border-color: #bbb;
+    }
+    .content-container {
+        padding: 20px 40px;
+        ul.grid {
+            list-style: none;
+            li {
+                float: left;
+                a {
+                    display: block;
+                    width: 140px;
+                    margin: 0 20px 20px 0;
+                    background: #0080de;
+                    color: #fff;
+                    transition: all .2s;
+                    padding: 20px;
+                    min-height: 60px;
+                    &:hover {
+                        background: #0080de + #181818;
+                        text-decoration: none;
+                    }
+                    &.dash {
+                        text-align: center;
+                        i {
+                            font-size: 42px;
+                        }
+                    }
+                }
+                &:nth-child(5n) {
+                    margin-right: 0;
+                }
+            }
+        }
+        .transaction-add {
+            background: #f8f8f8;
+            padding: 20px;
+            form {
+                .row {
+                    margin-bottom: 10px;
+                    .label {
+                        float: left;
+                        width: 100px;
+                        padding: 5px 0;
+                    }
+                    input {
+                        border: 1px solid #bbb;
+                        font-family: 'Open Sans', sans-serif;
+                        font-size: 14px;
+                        font-weight: 400px;
+                        padding: 4px 10px;
+                        outline: none;
+                        &:focus {
+                            border-color: #000;
+                        }
+                        &.day, &.month {
+                            width: 18px;
+                        }
+                        &.year {
+                            width: 36px;
+                        }
+                    }
+                }
+            }
+        }
+        .transaction-list {
+            margin-top: 40px;
+            .row {
+                border-top: 1px dashed #bbb;
+                padding: 4px 100px;
+                &:last-child {
+                    border-bottom: 1px dashed #bbb;
+                }
+                .date {
+                    float: left;
+                    width: 100px;
+                }
+                .price {
+                    float: right;
+                }
+                .quantity {
+                    text-align: center;
+                }
+                .name {
+                    float: left;
+                    width: 150px;
+                }
+            }
+        }
+        .stats {
+            .row {
+                display: block;
+                border-top: 1px dashed #bbb;
+                padding: 4px 0;
+                &.hovered {
+                    &:hover {
+                        background: #f8f8f8;
+                    }
+                }
+                &:last-child {
+                    border-bottom: 1px dashed #bbb;
+                }
+                .caption {
+                    float: left;
+                    width: 100px;
+                }
+                .bar {
+                    margin-left: 150px;
+                    height: 60px;
+                    background: #0080de;
+                }
+                .price {
+                    float: right;
+                }
+            }
+        }
+        .dash-overview {
+            margin-top: 40px;
+            .row {
+                margin: 0 20px 20px 0;
+                float: left;
+                width: 156px;
+                border: 2px dashed #095;
+                padding: 10px;
+                &.loss {
+                    border-color: #b33;
+                }
+                .date {
+                    font-weight: 600;
+                }
+                .income {
+                    color: #009955;
+                }
+                .expense {
+                    color: #b33;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spendings tracker</title>
+        <script src='/js/jquery.min.js'></script>
+        <script src='/js/Chart.js'></script>
+        <script src='/js/Chart.StackedBar.js'></script>
+        <link type='text/css' rel='stylesheet' href='/css/style.css'>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <div class='wrapper'>
+            {% if openReceipt %}
+            <div class="receipt">
+                <p>Open receipt: {{ receipt['shopName'] }} on {{ receipt['date'] }} from {{ receipt['accountName'] }}</p>
+            </div>
+            {% endif %}
+            <header>
+                {% for item in breadcrumbs %}
+                    {% if loop.last %}
+                        <span class='link'>{{ item.name }}</span>
+                    {% else %}
+                        <span class='link'><a href='{{ item.href }}'>{{ item.name }}</a></span><span class='sep'> / </span>
+                    {% endif %}
+                {% endfor %}
+            </header>
+            <div class='content-container'>
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+        <script>
+            //$(document).ready(function() {
+            //    var h = 0;
+            //    $('.grid li a').each(function(index, el) {
+            //        if (parseInt($(el).height(), 10) > h) {
+            //            h = parseInt($(el).height(), 10);
+            //        }
+            //    });
+            //    $('.grid li a').css({
+            //        height: (h + 20) + 'px'
+            //    });
+            //});
+        </script>
+    </body>
+</html>
