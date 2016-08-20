@@ -14,12 +14,19 @@ class App {
         header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
         header("Pragma: no-cache"); // HTTP/1.0
 
-        /** @var \Core\Router $router */
+        /** @var \ExpenseTracker\Router $router */
         $router = DI::get('router');
-        $router->handle();
+        /** @var \ExpenseTracker\Http\Request $reqeust */
+        $request = DI::get('request');
+        $router->handle($request);
 
         /** @var \Core\Dispatcher $dispatcher */
         $dispatcher = DI::get('dispatcher');
+        $dispatcher->set_controller($router->get_controller_name());
+        $dispatcher->set_action($router->get_action_name());
+        foreach ($router->get_params() as $paramName => $paramValue) {
+            $dispatcher->set_param($paramName, $paramValue);
+        }
 
         /** @var \Core\View $view */
         $view = DI::get('view');
