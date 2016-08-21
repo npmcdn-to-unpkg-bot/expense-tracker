@@ -4,7 +4,8 @@
       "Core\\": "core/",
       "Controller\\": "controllers/",
       "Spendings\\": "models/",
-      "ExpenseTracker\\": "src/classes/"
+      "ExpenseTracker\\": "src/classes/",
+      "ExpenseTracker\\Controller\\": "src/controllers/"
     }
   },
   "require": {

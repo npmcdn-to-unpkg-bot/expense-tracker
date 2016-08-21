@@ -17,7 +17,7 @@ class View
 
     public function __construct()
     {
-        $this->_loader = new \Twig_Loader_Filesystem(SYSTEM_DOC_ROOT . '/views');
+        $this->_loader = new \Twig_Loader_Filesystem(__DIR__ . '/../src/views');
         $this->_environment = new \Twig_Environment($this->_loader, []);
 
     }

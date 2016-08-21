@@ -1,21 +1,24 @@
 <?php
 
-use Core\DI;
+
+use ExpenseTracker\Di;
+use ExpenseTracker\Dispatcher;
+use ExpenseTracker\Http\Request;
+use ExpenseTracker\Router;
 
 class Spendings
 {
 
     public static function main()
     {
-        $request = new \ExpenseTracker\Http\Request();
-        DI::set('request', $request);
-        $dispatcher = new \Core\Dispatcher();
-        DI::set('dispatcher', $dispatcher);
+        $di = new Di();
+        $request = new Request();
+        $di->set('request', $request);
 
         $view = new \Core\View();
-        DI::set('view', $view);
+        $di->set('view', $view);
 
-        $router = new \ExpenseTracker\Router();
+        $router = new Router();
         $router->set_default_controller_name('home');
         $router->add('GET', '/add/{category_id:\d+}/', [
             'controller' => 'add',
@@ -30,13 +33,19 @@ class Spendings
             'controller' => 'expense',
             'action' => 'index'
         ]);
-        DI::set('router', $router);
+        $di->set('router', $router);
+
 
         $mysql = \Core\DB::getInstance();
-        DI::set('mysql', $mysql);
+        $di->set('mysql', $mysql);
 
-        $app = new \Core\App();
-        $app->run();
+        $dispatcher = new Dispatcher($di);
+        $dispatcher->set_controller_namespace('\\ExpenseTracker\\Controller');
+        $di->set('dispatcher', $dispatcher);
+
+        $dispatcher->handle($request);
+
+        echo $view->get_contents();
     }
 
 }
@@ -46,12 +55,11 @@ if (!isset($_GET['uri']) || $_GET['uri'] == '') {
 }
 
 ini_set("display_errors", "On");
-ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
+ini_set('error_reporting', E_ALL);
 ini_set("display_startup_errors", "On");
 
-define('SYSTEM_DOC_ROOT', __DIR__ . '/..');
-include_once SYSTEM_DOC_ROOT . '/conf/system.php';
-require_once SYSTEM_DOC_ROOT . '/vendor/autoload.php';
+include_once __DIR__ . '/../conf/system.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     Spendings::main();

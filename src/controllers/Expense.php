@@ -1,23 +1,23 @@
 <?php
 
-namespace Controller;
+namespace ExpenseTracker\Controller;
 
-use Core\DI;
+use ExpenseTracker\Controller;
 
-class Expense extends \Core\Controller
+class Expense extends Controller
 {
 
-    public function IndexAction()
+    public function index()
     {
         /** @var \PDO $dbh */
-        $dbh = DI::get('mysql');
-        $conversion = new \Spendings\Conversion();
+        $dbh = $this->_di->get('mysql');
+//        $conversion = new Conversion();
 
         /** @var \Core\View $view */
-        $view = DI::get('view');
+        $view = $this->_di->get('view');
 
-        /** @var \Core\Dispatcher $dispatcher */
-        $dispatcher = DI::get('dispatcher');
+        /** @var \ExpenseTracker\Dispatcher $dispatcher */
+        $dispatcher = $this->_di->get('dispatcher');
 
         $breadcrumbs = [
             [
@@ -120,13 +120,10 @@ class Expense extends \Core\Controller
     public function AddAction()
     {
         /** @var \PDO $dbh */
-        $dbh = DI::get('mysql');
+        $dbh = $this->_di->get('mysql');
 
         /** @var \Core\View $view */
-        $view = DI::get('view');
-
-        /** @var \Core\Dispatcher $dispatcher */
-        $dispatcher = DI::get('dispatcher');
+        $view = $this->_di->get('view');
 
         $day   = (int)$_POST['day']   < 10 ? '0' . $_POST['day']   : $_POST['day'];
         $month = (int)$_POST['month'] < 10 ? '0' . $_POST['month'] : $_POST['month'];
@@ -161,13 +158,10 @@ class Expense extends \Core\Controller
     public function AddCategoryAction()
     {
         /** @var \PDO $dbh */
-        $dbh = DI::get('mysql');
+        $dbh = $this->_di->get('mysql');
 
         /** @var \Core\View $view */
-        $view = DI::get('view');
-
-        /** @var \Core\Dispatcher $dispatcher */
-        $dispatcher = DI::get('dispatcher');
+        $view = $this->_di->get('view');
 
         $q = $dbh->prepare("
             SELECT path FROM tree

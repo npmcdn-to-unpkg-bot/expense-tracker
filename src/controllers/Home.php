@@ -1,20 +1,20 @@
 <?php
 
-namespace Controller;
+namespace ExpenseTracker\Controller;
 
-use Core\DI;
+use ExpenseTracker\Controller;
 
-class Home extends \Core\Controller
+class Home extends Controller
 {
 
-    public function IndexAction()
+    public function index()
     {
         /** @var \PDO $dbh */
-        $dbh = DI::get('mysql');
+        $dbh = $this->_di->get('mysql');
         $conversion = new \Spendings\Conversion();
 
         /** @var \Core\View $view */
-        $view = DI::get('view');
+        $view = $this->_di->get('view');
 
         $data = [];
 

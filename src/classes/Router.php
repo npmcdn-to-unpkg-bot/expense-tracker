@@ -2,8 +2,8 @@
 
 namespace ExpenseTracker;
 
-use Core\DI;
 use ExpenseTracker\Http\Request;
+use ExpenseTracker\Router\Route;
 
 class Router
 {
@@ -108,7 +108,6 @@ class Router
     {
         $method = strtolower($request->get_method());
         $uri = $request->get_uri();
-        $route_matched = false;
         if (count($this->_routes) > 0) {
             foreach ($this->_routes as $route) {
                 $params = [];
@@ -119,36 +118,56 @@ class Router
                 }, $route['uri']);
                 unset($param_index);
                 if ($method == $route['method'] && preg_match('#' . $regex . '#', $uri, $matches)) {
-                    $route_matched = true;
-                    $this->_detected_controller_name = $route['controller'];
-                    $this->_detected_action_name = $route['action'];
+                    $this->_detected_controller_name = $this->transform_controller_name($route['controller']);
+                    $this->_detected_action_name = str_replace('-', '_', $route['action']);
                     if (count($params) > 0) {
                         foreach ($params as $param_name => $param_index) {
                             $this->_detected_params[$param_name] = $matches[$param_index];
                         }
                     }
+                    $matched_route = new Route();
+                    $matched_route->set_method($method);
+                    $matched_route->set_uri($uri);
+                    $matched_route->set_controller_name($this->_detected_controller_name);
+                    $matched_route->set_action_name($this->_detected_action_name);
+                    $matched_route->set_params($this->_detected_params);
+                    return $matched_route;
                 }
             }
         }
-        if (!$route_matched) {
-            switch (true) {
-                case $uri == '/':
-                    $this->_detected_controller_name = $this->_default_controller_name;
-                    $this->_detected_action_name = $this->_default_action_name;
-                    break;
-                case preg_match('#^/([\w]+)/?$#', $uri, $matches):
-                    $this->_detected_controller_name = $matches[1];
-                    $this->_detected_action_name = $this->_default_action_name;
-                    break;
-                case preg_match('#^/([\w]+)/([\w]+)/?$#', $uri, $matches):
-                    $this->_detected_controller_name = $matches[1];
-                    $this->_detected_action_name = $matches[2];
-                    break;
-                default:
-                    $this->_detected_controller_name = 'error';
-                    $this->_detected_action_name = 'notFound';
-            }
+        switch (true) {
+            case $uri == '/':
+                $this->_detected_controller_name = $this->transform_controller_name($this->_default_controller_name);
+                $this->_detected_action_name = $this->_default_action_name;
+                break;
+            case preg_match('#^/([\w-]+)/?$#', $uri, $matches):
+                $this->_detected_controller_name = $this->transform_controller_name($matches[1]);
+                $this->_detected_action_name = $this->_default_action_name;
+                break;
+            case preg_match('#^/([\w-]+)/([\w-]+)/?$#', $uri, $matches):
+                $this->_detected_controller_name = $this->transform_controller_name($matches[1]);;
+                $this->_detected_action_name = str_replace('-', '_', $matches[2]);
+                break;
+            default:
+                return false;
         }
+        $matched_route = new Route();
+        $matched_route->set_method($request->get_method());
+        $matched_route->set_uri($uri);
+        $matched_route->set_controller_name($this->_detected_controller_name);
+        $matched_route->set_action_name($this->_detected_action_name);
+        $matched_route->set_params([]);
+        return $matched_route;
+    }
+
+
+    private function transform_controller_name($controller_name)
+    {
+        $name_parts = explode('-', $controller_name);
+        array_walk($name_parts, function(&$input) {
+            $input = strtoupper(substr($input, 0, 1)) . substr($input, 1);
+        });
+        return implode($name_parts);
     }
 
 }

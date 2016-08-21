@@ -1,17 +1,21 @@
 <?php
 
-namespace Core;
+namespace ExpenseTracker;
 
 class Controller
 {
 
-    public function __construct()
+    /** @var Di $_di */
+    protected $_di;
+
+    public function __construct(Di $di)
     {
+        $this->_di = $di;
         /** @var \Core\View $view */
-        $view = DI::get('view');
+        $view = $this->_di->get('view');
 
         /** @var \PDO $dbh */
-        $dbh = DI::get('mysql');
+        $dbh = $this->_di->get('mysql');
 
         if (isset($_COOKIE['receipt_id']) && (int)$_COOKIE['receipt_id'] > 0) {
             $receiptId = (int)$_COOKIE['receipt_id'];

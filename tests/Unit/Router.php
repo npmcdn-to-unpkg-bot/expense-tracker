@@ -22,12 +22,35 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         ]);
         $router->handle($request);
         $this->assertTrue(
-            $router->get_controller_name() == 'home',
-            'Expected "home" and got ' . $router->get_controller_name()
+            $router->get_controller_name() == 'Home',
+            'Expected "Home" and got ' . $router->get_controller_name()
         );
         $this->assertTrue(
             $router->get_action_name() == 'index',
             'Expected "index" and got ' . $router->get_action_name()
+        );
+    }
+
+    public function testSimpleRouteWithHyphen()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/some-test-uri/test-action',
+            'REQUEST_METHOD' => Request::GET
+        ];
+        $request = new Request();
+        $router = new Router();
+        $router->add(Request::GET, '/some-test-uri/test-action', [
+            'controller' => 'someTestUri',
+            'action' => 'test_action'
+        ]);
+        $router->handle($request);
+        $this->assertTrue(
+            $router->get_controller_name() == 'SomeTestUri',
+            'Expected "SomeTestUri" and got ' . $router->get_controller_name()
+        );
+        $this->assertTrue(
+            $router->get_action_name() == 'test_action',
+            'Expected "test_action" and got ' . $router->get_action_name()
         );
     }
 
@@ -43,8 +66,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router->set_default_action_name('testAction');
         $router->handle($request);
         $this->assertTrue(
-            $router->get_controller_name() == 'testController',
-            'Expected "testController" and got ' . $router->get_controller_name()
+            $router->get_controller_name() == 'TestController',
+            'Expected "TestController" and got ' . $router->get_controller_name()
         );
         $this->assertTrue(
             $router->get_action_name() == 'testAction',
@@ -63,8 +86,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router = new Router();
         $router->handle($request);
         $this->assertTrue(
-            $router->get_controller_name() == 'test',
-            'Expected "test" and got ' . $router->get_controller_name()
+            $router->get_controller_name() == 'Test',
+            'Expected "Test" and got ' . $router->get_controller_name()
         );
         $this->assertTrue(
             $router->get_action_name() == 'index',
@@ -83,12 +106,44 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router = new Router();
         $router->handle($request);
         $this->assertTrue(
-            $router->get_controller_name() == 'testController',
-            'Expected "testController" and got ' . $router->get_controller_name()
+            $router->get_controller_name() == 'TestController',
+            'Expected "TestController" and got ' . $router->get_controller_name()
         );
         $this->assertTrue(
             $router->get_action_name() == 'testAction',
             'Expected "testAction" and got ' . $router->get_action_name()
+        );
+    }
+
+
+    public function testDefaultControllerHyphenInUri()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/test-controller',
+            'REQUEST_METHOD' => Request::GET
+        ];
+        $request = new Request();
+        $router = new Router();
+        $router->handle($request);
+        $this->assertTrue(
+            $router->get_controller_name() == 'TestController',
+            'Expected "TestController" and got ' . $router->get_controller_name()
+        );
+    }
+
+
+    public function testDefaultActionHyphenInUri()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/test/test-action',
+            'REQUEST_METHOD' => Request::GET
+        ];
+        $request = new Request();
+        $router = new Router();
+        $router->handle($request);
+        $this->assertTrue(
+            $router->get_action_name() == 'test_action',
+            'Expected "test_action" and got ' . $router->get_action_name()
         );
     }
 
@@ -155,6 +210,38 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $router->get_param('slug') == 'qwe123',
             'Expected "qwe123" and got ' . $router->get_param('slug')
+        );
+    }
+
+
+    public function testReturnMatchedRouteObjectOnValidRoute()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/test',
+            'REQUEST_METHOD' => Request::GET
+        ];
+        $request = new Request();
+        $router = new Router();
+        $matched_route = $router->handle($request);
+        $this->assertTrue(
+            $matched_route instanceof Router\Route,
+            'Expected instance of Route'
+        );
+    }
+
+
+    public function testReturnFalseOnInvalidRoute()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/test/test/test',
+            'REQUEST_METHOD' => Request::GET
+        ];
+        $request = new Request();
+        $router = new Router();
+        $matched_route = $router->handle($request);
+        $this->assertTrue(
+            $matched_route === false,
+            'Expected FALSE'
         );
     }
 
